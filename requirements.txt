@@ -1,0 +1,41 @@
+# ── Google Earth Engine ─────────────────────────────────────────────────────
+earthengine-api
+geemap
+
+# ── Geospatial ───────────────────────────────────────────────────────────────
+geopandas
+rasterio
+shapely
+fiona
+pyproj
+# NOTE: GDAL on Windows — install via pre-built wheel, see README section below
+
+# ── Data Science Core ────────────────────────────────────────────────────────
+numpy
+pandas
+scipy
+
+# ── Machine Learning ─────────────────────────────────────────────────────────
+scikit-learn
+xgboost
+lightgbm
+imbalanced-learn
+
+# ── Visualization ────────────────────────────────────────────────────────────
+matplotlib
+seaborn
+plotly
+folium
+mapclassify
+
+# ── Notebooks ────────────────────────────────────────────────────────────────
+jupyter
+ipykernel
+ipywidgets
+
+# ── Utilities ────────────────────────────────────────────────────────────────
+python-dotenv
+tqdm
+joblib
+pyyaml
+loguru

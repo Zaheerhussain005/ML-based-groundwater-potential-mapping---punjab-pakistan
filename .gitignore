@@ -1,0 +1,48 @@
+# Environment
+.env
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# GEE credentials
+credentials/
+
+# Data (large files — never commit)
+data/raw/
+data/processed/
+data/exports/
+*.tif
+*.tif.aux.xml
+*.npy
+*.zip
+
+# Model binaries
+outputs/models/*.pkl
+outputs/models/*.joblib
+outputs/models/*.pt
+
+# Prediction maps (large GeoTIFFs)
+outputs/maps/*.tif
+outputs/maps/*.tif.aux.xml
+
+# Reference papers / PDFs (copyright + bloat)
+*.pdf
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
