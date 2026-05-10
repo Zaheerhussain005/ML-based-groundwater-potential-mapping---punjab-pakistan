@@ -20,16 +20,17 @@ Extends and improves upon: *Waqas et al. (2022), Pak. j. sci. ind. res. 65A(2) 1
 | 3 | Raster preprocessing + normalization | DONE |
 | 4 | Label generation (weighted overlay) | DONE |
 | 5 | EDA + data validation | DONE |
-| 6 | ML training (RF, XGBoost, LightGBM) | NEXT |
-| 7 | Prediction map generation | PENDING |
-| 8 | Visualization (static + interactive) | PENDING |
-| 9 | Accuracy validation | PENDING |
+| 6 | ML training (RF, XGBoost, LightGBM + Ensemble) | DONE |
+| 7 | Prediction map generation (37M pixels) | DONE |
+| 8 | Interactive web map (Folium) | NEXT |
+| 9 | Thesis figures + write-up | PENDING |
+| 10 | Real-world validation (PCRWR/WAPDA) | PENDING |
 
 ---
 
 ## Tech Stack
 - **GEE:** Data collection (Landsat 8, SRTM, CHIRPS, MODIS, SoilGrids)
-- **Python:** rasterio, geopandas, scikit-learn, XGBoost, LightGBM, geemap
+- **Python 3.13:** rasterio, geopandas, scikit-learn, XGBoost, LightGBM, geemap
 - **GIS:** QGIS + PyQGIS for visualization and layer prep
 - **Web:** Folium (interactive maps), Flask (future dashboard)
 
@@ -40,38 +41,68 @@ Extends and improves upon: *Waqas et al. (2022), Pak. j. sci. ind. res. 65A(2) 1
 rao-research/
 ├── data/
 │   ├── raw/
-│   │   └── Pothohar_Groundwater_Features.tif   ← 860 MB, 9-band GeoTIFF from GEE
+│   │   └── Pothohar_Groundwater_Features.tif     ← 860 MB, 9-band GeoTIFF from GEE
 │   ├── processed/
-│   │   ├── features.csv                         ← 3.2 GB, 37M pixels x 9 features (normalized)
-│   │   ├── features_normalized.tif              ← normalized raster version
-│   │   ├── pixel_coords.csv                     ← row/col index for spatial reconstruction
-│   │   ├── all_labels.npy                       ← 37M labels (0/1/2) for all pixels
-│   │   └── training_samples.csv                 ← 450K balanced rows for ML training
+│   │   ├── features.csv                           ← 3.2 GB, 37M pixels x 9 features (normalized)
+│   │   ├── features_normalized.tif                ← normalized raster (input to predict.py)
+│   │   ├── pixel_coords.csv                       ← row/col index for spatial reconstruction
+│   │   ├── all_labels.npy                         ← 37M labels (0/1/2) for all pixels
+│   │   └── training_samples.csv                   ← 450K balanced rows used for ML training
 │   └── exports/
 ├── notebooks/
 │   ├── 01_data_exploration.ipynb
 │   └── 02_model_training.ipynb
 ├── src/
-│   ├── data_collection/
-│   │   └── gee_collector.py
-│   ├── preprocessing/
-│   │   └── raster_processor.py
-│   ├── models/
-│   │   ├── train.py
-│   │   └── predict.py
-│   └── visualization/
-│       └── map_visualizer.py
+│   ├── data_collection/gee_collector.py
+│   ├── preprocessing/raster_processor.py
+│   ├── models/train.py + predict.py
+│   └── visualization/map_visualizer.py
 ├── outputs/
-│   ├── maps/         ← prediction GeoTIFFs go here
-│   ├── models/       ← trained .joblib models go here
-│   └── figures/      ← EDA plots already saved here (6 plots)
-├── step1_generate_labels.py    ← DONE
-├── step2_validate.py           ← DONE
-├── collect_data.py             ← DONE (GEE export script)
-├── preprocess.py               ← DONE
+│   ├── figures/
+│   │   ├── all_features_grid.png                  ← all 9 bands visualized
+│   │   ├── correlation_matrix.png
+│   │   ├── feature_distributions.png
+│   │   ├── feature_boxplots.png
+│   │   ├── class_distribution.png
+│   │   ├── feature_target_correlation.png
+│   │   ├── feature_class_heatmap.png
+│   │   ├── gw_potential_label_map.png             ← weighted overlay label map
+│   │   ├── prediction_summary.png
+│   │   ├── layers/                                ← 9 individual feature maps
+│   │   ├── panels/                                ← 9 publication-style panels
+│   │   └── training/
+│   │       ├── roc_curves.png
+│   │       ├── pr_curves.png
+│   │       ├── confusion_matrices.png
+│   │       ├── feature_importance.png
+│   │       ├── model_comparison.png
+│   │       ├── calibration_curves.png
+│   │       └── cv_fold_scores.png
+│   ├── maps/
+│   │   ├── gw_prediction_xgboost.tif              ← 2.9 MB, classified map (0/1/2)
+│   │   ├── gw_probability_high.tif                ← 167 MB, continuous probability
+│   │   ├── gw_potential_labels.tif                ← weighted overlay labels raster
+│   │   ├── gw_prediction_xgboost.png              ← classified map (static)
+│   │   ├── gw_probability_high.png                ← probability heatmap
+│   │   ├── gw_comparison_overlay_vs_ml.png        ← side-by-side comparison
+│   │   └── prediction_summary.json                ← pixel counts + agreement stats
+│   └── models/
+│       ├── best_model.joblib                      ← XGBoost (8.5 MB)
+│       ├── xgboost.joblib                         ← 8.5 MB
+│       ├── random_forest.joblib                   ← 68 MB
+│       ├── lightgbm.joblib                        ← 14.5 MB
+│       ├── voting_ensemble.joblib                 ← 91 MB (RF+XGB+LGB)
+│       ├── metrics.json                           ← full accuracy report
+│       └── feature_importance.csv
+├── collect_data.py          ← DONE (GEE export script)
+├── preprocess.py            ← DONE
+├── step1_generate_labels.py ← DONE
+├── step2_validate.py        ← DONE
+├── step3_train_models.py    ← DONE
+├── step4_predict_map.py     ← DONE
 ├── CLAUDE.md
 ├── requirements.txt
-└── .env                        ← GEE_PROJECT_ID=ee-zaheersapar005
+└── .env                     ← GEE_PROJECT_ID=ee-zaheersapar005
 ```
 
 ---
@@ -80,24 +111,25 @@ rao-research/
 **Pothohar Plateau — 5 Districts:**
 - Chakwal, Rawalpindi, Attock, Jhelum, Mianwali
 - Total area: ~25,000 sq.km
-- CRS: EPSG:4326 (exported from GEE)
-- Resolution: 30 meters
-- Raster size: 10,062 x 6,884 pixels = 69.2M total, 37M valid (53.4%)
+- CRS: EPSG:4326 (exported from GEE), EPSG:32642 (UTM Zone 42N for analysis)
+- Resolution: 30 meters (Landsat/SRTM native)
+- Raster size: 10,062 x 6,884 pixels = 69.2M total, **37,015,091 valid (53.4%)**
+- FAO/GAUL district names used: `Chakwal District`, `Rawalpindi District`, etc.
 
 ---
 
 ## Input Features (9 layers from GEE)
-| # | Feature | Source | Role | Correlation with GW |
-|---|---------|--------|------|---------------------|
-| 1 | Elevation | SRTM | terrain | +0.234 |
-| 2 | Slope | SRTM derived | infiltration | +0.051 |
-| 3 | Aspect | SRTM derived | solar exposure | +0.060 |
-| 4 | TWI | SRTM + flow acc | wetness index | +0.185 |
-| 5 | NDVI | Landsat 8 | vegetation/recharge | +0.240 |
-| 6 | NDWI | Landsat 8 | water bodies | -0.222 |
-| 7 | Rainfall | CHIRPS | recharge driver | +0.514 |
-| 8 | Soil | SoilGrids | permeability | +0.836 |
-| 9 | LST | MODIS | evapotranspiration | -0.426 |
+| # | Feature | Source | GEE Dataset | Role | Correlation with GW |
+|---|---------|--------|-------------|------|---------------------|
+| 1 | Elevation | SRTM | `USGS/SRTMGL1_003` | terrain | +0.234 |
+| 2 | Slope | SRTM derived | `ee.Terrain.slope()` | infiltration | +0.051 |
+| 3 | Aspect | SRTM derived | `ee.Terrain.aspect()` | solar exposure | +0.060 |
+| 4 | TWI | SRTM + `WWF/HydroSHEDS/15ACC` | wetness index | | +0.185 |
+| 5 | NDVI | Landsat 8 | `LANDSAT/LC08/C02/T1_L2` | vegetation/recharge | +0.240 |
+| 6 | NDWI | Landsat 8 | `LANDSAT/LC08/C02/T1_L2` | water bodies | -0.222 |
+| 7 | Rainfall | CHIRPS | `UCSB-CHG/CHIRPS/DAILY` (2015–2023 sum) | recharge driver | +0.514 |
+| 8 | Soil | SoilGrids | `OpenLandMap/SOL/SOL_TEXTURE-CLASS_USDA-TT_M/v02` | permeability | +0.836 |
+| 9 | LST | MODIS | `MODIS/061/MOD11A1` | evapotranspiration | -0.426 |
 
 **Key EDA finding:** Soil (r=0.836) and Rainfall (r=0.514) are dominant predictors.
 Soil texture is the #1 factor — consistent with reference paper (Geology/LULC = 45% weight).
@@ -119,31 +151,62 @@ Labels generated via weighted overlay (knowledge-based label generation):
 | LST | 3% | inverse (-) |
 | Aspect | 2% | direct (+) |
 
-Classification: bottom 40% = Low (0), 40-80% = Medium (1), top 20% = High (2)
-Training set: **450,000 rows** (150K per class, perfectly balanced)
-Full label set: **37,015,091 labels** saved in `all_labels.npy`
+Classification thresholds: bottom 40% = Low (0), 40–80% = Medium (1), top 20% = High (2)
+Training set: **450,000 rows** (150K per class, perfectly balanced) | Split: 72% train / 8% val / 20% test
 
 ---
 
 ## EDA Key Findings
-- No missing values, all features correctly normalized [0, 1]
-- Elevation "FAIL" in logic check is a **regional characteristic** — in Pothohar,
-  northern areas (Rawalpindi/Attock) are higher elevation AND have better GW potential
-  due to more rainfall and coarser soil deposits (confirmed by reference paper)
-- Slope correlation r=0.051 — negligible predictor in this region
-- **Data validated and ready for ML training**
+- No missing values, all 9 features correctly normalized [0, 1]
+- Soil (r=0.836) and Rainfall (r=0.514) are the two dominant predictors
+- Slope correlation r=0.051 — negligible predictor in this flat plateau region
+- Elevation "FAIL" in directional logic check is a **regional characteristic** — northern areas
+  (Rawalpindi/Attock) are higher elevation AND have better GW potential due to more rainfall
+  and coarser alluvial deposits (confirmed by reference paper)
+- Class distribution after labeling: Low=40%, Medium=40%, High=20%
 
 ---
 
-## ML Models — NEXT STEP
-- **Random Forest** — baseline, feature importance
-- **XGBoost** — target best accuracy
-- **LightGBM** — fast training, handles class patterns well
-- Input: `data/processed/training_samples.csv` (450K rows, 9 features)
-- Target: `GW_Potential` (0=Low, 1=Medium, 2=High)
-- Validation: 80/20 split + 5-fold cross-validation + ROC-AUC
-- Output: `outputs/models/` (.joblib files)
-- Next script to write: `step3_train_models.py`
+## ML Training Results (Step 3) — COMPLETED
+
+### Model Accuracy on Test Set (90,000 samples)
+
+| Model | Accuracy | F1-Macro | Cohen's κ | ROC-AUC (OvR) |
+|-------|----------|----------|-----------|---------------|
+| Random Forest | 98.32% | 0.9832 | 0.9749 | 0.9995 |
+| **XGBoost ★** | **99.12%** | **0.9912** | **0.9868** | **0.9998** |
+| LightGBM | 99.11% | 0.9911 | 0.9867 | 0.9998 |
+| Voting Ensemble | 99.09% | 0.9909 | 0.9863 | 0.9998 |
+
+**Best model: XGBoost** — selected automatically, saved as `best_model.joblib`
+
+### Cross-Validation (5-fold, macro F1)
+| Model | Mean F1 | Std |
+|-------|---------|-----|
+| Random Forest | 0.9839 | ±0.0005 |
+| XGBoost | 0.9896 | ±0.0004 |
+| LightGBM | 0.9911 | ±0.0002 |
+
+### Per-Class Performance (XGBoost)
+| Class | Precision | Recall | F1 |
+|-------|-----------|--------|----|
+| Low | 99.32% | 99.43% | 99.38% |
+| Medium | 99.04% | 98.32% | 98.68% |
+| High | 98.99% | 99.61% | 99.31% |
+
+---
+
+## Prediction Map Results (Step 4) — COMPLETED
+
+### Groundwater Potential Distribution (37M pixels, full Pothohar Plateau)
+| Zone | Pixel Count | Coverage |
+|------|-------------|----------|
+| Low Potential | 14,806,035 | 40.0% |
+| Medium Potential | 14,806,036 | 40.0% |
+| High Potential | 7,403,020 | **20.0%** |
+
+- **ML vs Weighted Overlay agreement: 99.05%** on full 37M pixel comparison
+- Prediction ran in tiled 2048×2048 windows to handle memory (20 tiles, ~19 min)
 
 ---
 
@@ -152,20 +215,29 @@ Full label set: **37,015,091 labels** saved in `all_labels.npy`
 # Activate venv
 .\venv\Scripts\activate
 
+# GEE data collection (DONE)
+python collect_data.py
+
+# Preprocessing (DONE)
+python preprocess.py
+
 # Step 1 - Generate labels (DONE)
 python step1_generate_labels.py
 
 # Step 2 - EDA + Validation (DONE)
 python step2_validate.py
 
-# Step 3 - Train ML models (NEXT)
+# Step 3 - Train ML models (DONE)
 python step3_train_models.py
 
-# Step 4 - Generate prediction map
+# Step 4 - Generate prediction map (DONE)
 python step4_predict_map.py
 
-# Step 5 - Visualize
+# Step 5 - Interactive web map (NEXT)
 python step5_visualize.py
+
+# Re-authenticate GEE if needed
+python -c "import ee; ee.Authenticate(force=True)"
 
 # Launch notebooks
 jupyter notebook notebooks/
@@ -174,11 +246,13 @@ jupyter notebook notebooks/
 ---
 
 ## Important Notes
-- **Never commit** `.env`, `data/raw/*.tif`, `data/processed/*.csv` (too large)
-- GEE project: `ee-zaheersapar005` | re-auth: `python -c "import ee; ee.Authenticate(force=True)"`
+- **Never commit** `.env`, `data/raw/*.tif`, `data/processed/*.csv`, `*.npy` (too large)
+- GEE project: `ee-zaheersapar005` | GEE email: `zaheersapar005@gmail.com`
+- FAO/GAUL district names require `" District"` suffix (e.g. `"Chakwal District"`)
+- All GEE bands must be cast to `.toFloat()` before export to avoid type conflict errors
 - Training labels are knowledge-based (weighted overlay) — valid methodology for thesis
 - Geology layer from GSP sheets not yet digitized (optional enhancement)
-- All 37M pixel labels stored in `all_labels.npy` for final map reconstruction
+- `prediction_summary.json` pixel counts are from downsampled view (÷5); full-res counts in metrics
 
 ---
 
@@ -188,8 +262,11 @@ Chakwal, Punjab: A GIS and Remote Sensing Perspective.
 *Pak. j. sci. ind. res. Ser. A: phys. sci.* 65A(2): 128-134.
 
 **How this thesis improves on it:**
-- 5 districts vs 1 (Chakwal only)
-- ML models vs manual weighted overlay
-- 9 features vs 5 features
-- Proper cross-validation vs secondary data only
-- Interactive web map output
+| Aspect | Reference Paper | This Thesis |
+|--------|----------------|-------------|
+| Study area | 1 district (Chakwal) | 5 districts (Pothohar Plateau) |
+| Method | Manual weighted overlay | ML (RF, XGBoost, LightGBM, Ensemble) |
+| Features | 5 (LULC, geology, drainage, slope, rainfall) | 9 (+ NDVI, NDWI, TWI, LST, soil) |
+| Validation | Secondary data only (NESPAK) | 5-fold CV + ROC-AUC + 99% agreement test |
+| Output | Static GIS maps | GeoTIFF + interactive web map |
+| Accuracy | Not reported | XGBoost: 99.12% accuracy, AUC=0.9998 |

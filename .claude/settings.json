@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "academic-search": {
+      "command": "d:/rao-research/venv/Scripts/python.exe",
+      "args": ["d:/rao-research/mcp_academic_search.py"]
+    }
+  }
+}

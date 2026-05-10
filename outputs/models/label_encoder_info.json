@@ -1,0 +1,18 @@
+{
+  "features": [
+    "Elevation",
+    "Slope",
+    "Aspect",
+    "TWI",
+    "NDVI",
+    "NDWI",
+    "Rainfall",
+    "Soil",
+    "LST"
+  ],
+  "class_names": [
+    "Low",
+    "Medium",
+    "High"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "model_used": "best_model.joblib",
+  "pixels_total": 69266808,
+  "pixels_valid": 37015091,
+  "pixels_predicted": 1479429,
+  "class_counts_ml": {
+    "Low": 592344,
+    "Medium": 586267,
+    "High": 300818
+  },
+  "class_counts_overlay": {
+    "Low": 14806035,
+    "Medium": 14806036,
+    "High": 7403020
+  },
+  "class_pct_ml": {
+    "Low": 40.03869060292856,
+    "Medium": 39.627924016630736,
+    "High": 20.333385380440696
+  },
+  "agreement_full_res": 0.9904657805650133,
+  "agreement_confusion": [
+    [
+      14722048,
+      83987,
+      0
+    ],
+    [
+      98664,
+      14562137,
+      145235
+    ],
+    [
+      10,
+      25014,
+      7377996
+    ]
+  ],
+  "window_size_px": 2048,
+  "png_downsample_factor": 5
+}
