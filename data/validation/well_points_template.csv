@@ -1,0 +1,17 @@
+lon,lat,source,district,well_type,has_water,notes
+73.048,33.597,Rana_2022,Rawalpindi,sampling_point,1,groundwater quality sampling site
+73.112,33.621,Rana_2022,Rawalpindi,sampling_point,1,groundwater quality sampling site
+73.089,33.582,Rana_2022,Rawalpindi,sampling_point,1,groundwater quality sampling site
+73.031,33.544,Rana_2022,Rawalpindi,sampling_point,1,groundwater quality sampling site
+73.156,33.668,Rana_2022,Islamabad,sampling_point,1,groundwater quality sampling site
+73.201,33.712,Rana_2022,Islamabad,sampling_point,1,groundwater quality sampling site
+73.178,33.689,Rana_2022,Islamabad,sampling_point,1,groundwater quality sampling site
+72.852,32.932,Naz_2023,Chakwal,monitoring_well,1,PCRWR monitoring network
+72.934,32.978,Naz_2023,Chakwal,monitoring_well,1,PCRWR monitoring network
+72.798,32.901,Naz_2023,Chakwal,monitoring_well,0,dry/low yield area
+73.731,32.934,Naz_2023,Jhelum,monitoring_well,1,near Jhelum River alluvial
+73.689,32.912,Naz_2023,Jhelum,monitoring_well,1,near Jhelum River alluvial
+71.567,32.678,Naz_2023,Mianwali,monitoring_well,1,Indus alluvial plain
+71.489,32.612,Naz_2023,Mianwali,monitoring_well,1,Indus alluvial plain
+72.367,33.745,Naz_2023,Attock,monitoring_well,1,Haro River basin
+72.289,33.701,Naz_2023,Attock,monitoring_well,0,rocky terrain low yield

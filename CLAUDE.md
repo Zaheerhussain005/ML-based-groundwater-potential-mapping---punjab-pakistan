@@ -19,12 +19,12 @@ Extends and improves upon: *Waqas et al. (2022), Pak. j. sci. ind. res. 65A(2) 1
 | 2 | GEE data collection (9 layers, 5 districts) | DONE |
 | 3 | Raster preprocessing + normalization | DONE |
 | 4 | Label generation (weighted overlay) | DONE |
-| 5 | EDA + data validation | DONE |
+| 5 | EDA + exploratory validation | DONE |
 | 6 | ML training (RF, XGBoost, LightGBM + Ensemble) | DONE |
 | 7 | Prediction map generation (37M pixels) | DONE |
-| 8 | Interactive web map (Folium) | NEXT |
-| 9 | Thesis figures + write-up | PENDING |
-| 10 | Real-world validation (PCRWR/WAPDA) | PENDING |
+| 8 | Real-world validation (well data + statistics) | IN PROGRESS |
+| 9 | Thesis write-up (LaTeX template created) | IN PROGRESS |
+| 10 | Interactive web map (Folium) | DEFERRED — Q1 work first |
 
 ---
 
@@ -94,16 +94,30 @@ rao-research/
 │       ├── voting_ensemble.joblib                 ← 91 MB (RF+XGB+LGB)
 │       ├── metrics.json                           ← full accuracy report
 │       └── feature_importance.csv
-├── collect_data.py          ← DONE (GEE export script)
-├── preprocess.py            ← DONE
-├── step1_generate_labels.py ← DONE
-├── step2_validate.py        ← DONE
-├── step3_train_models.py    ← DONE
-├── step4_predict_map.py     ← DONE
+├── data/
+│   └── validation/
+│       ├── validation_wells_combined.csv  ← 85 pts (Rana 2022 + Naz 2023 + GSP dry refs)
+│       ├── naz2023_wells_pothohar.csv     ← 146 auto-digitized PCRWR wells from Fig.1
+│       ├── naz2023_wells_all.csv          ← all Punjab wells from digitizer
+│       ├── well_points_template.csv       ← 16-pt curated template (has dry wells)
+│       ├── well_points_classified.csv     ← 45 sampled wells with predicted class
+│       └── calibration.json              ← affine transform from extract_wells script
+├── collect_data.py               ← DONE (GEE export script)
+├── preprocess.py                 ← DONE
+├── step1_generate_labels.py      ← DONE
+├── step2_validate.py             ← DONE
+├── step3_train_models.py         ← DONE
+├── step4_predict_map.py          ← DONE
+├── step5_realworld_validation.py ← DONE (sensitivity/specificity/ROC-AUC/Mann-Whitney)
+├── extract_wells_from_figure.py  ← DONE (auto-digitizer for Naz 2023 Fig.1 red dots)
+├── mcp_academic_search.py        ← DONE (MCP server: OpenAlex + Semantic Scholar + Unpaywall)
+├── .mcp.json                     ← MCP server config (academic-search)
 ├── CLAUDE.md
 ├── requirements.txt
-└── .env                     ← GEE_PROJECT_ID=ee-zaheersapar005
+└── .env                          ← GEE_PROJECT_ID=ee-zaheersapar005
 ```
+
+**Thesis LaTeX template:** `C:\Users\ADNAN\THESIS\` (Overleaf-ready, all 6 chapters pre-written)
 
 ---
 
@@ -212,36 +226,65 @@ Training set: **450,000 rows** (150K per class, perfectly balanced) | Split: 72%
 
 ## Key Commands
 ```powershell
-# Activate venv
-.\venv\Scripts\activate
+# Run venv python directly (PS execution policy blocks activate script)
+& "d:\rao-research\venv\Scripts\python.exe" <script.py>
 
-# GEE data collection (DONE)
-python collect_data.py
+# All pipeline steps (DONE)
+& "d:\rao-research\venv\Scripts\python.exe" collect_data.py
+& "d:\rao-research\venv\Scripts\python.exe" preprocess.py
+& "d:\rao-research\venv\Scripts\python.exe" step1_generate_labels.py
+& "d:\rao-research\venv\Scripts\python.exe" step2_validate.py
+& "d:\rao-research\venv\Scripts\python.exe" step3_train_models.py
+& "d:\rao-research\venv\Scripts\python.exe" step4_predict_map.py
 
-# Preprocessing (DONE)
-python preprocess.py
+# Step 8 - Real-world validation (re-run after getting new well data)
+& "d:\rao-research\venv\Scripts\python.exe" step5_realworld_validation.py
 
-# Step 1 - Generate labels (DONE)
-python step1_generate_labels.py
-
-# Step 2 - EDA + Validation (DONE)
-python step2_validate.py
-
-# Step 3 - Train ML models (DONE)
-python step3_train_models.py
-
-# Step 4 - Generate prediction map (DONE)
-python step4_predict_map.py
-
-# Step 5 - Interactive web map (NEXT)
-python step5_visualize.py
+# Auto-digitize wells from a figure image (interactive — needs display)
+& "d:\rao-research\venv\Scripts\python.exe" extract_wells_from_figure.py
 
 # Re-authenticate GEE if needed
-python -c "import ee; ee.Authenticate(force=True)"
-
-# Launch notebooks
-jupyter notebook notebooks/
+& "d:\rao-research\venv\Scripts\python.exe" -c "import ee; ee.Authenticate(force=True)"
 ```
+
+---
+
+## Real-World Validation Results (Step 8)
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Sensitivity (TPR) | 59.0% | 23/39 productive wells in Med+High zone |
+| Specificity (TNR) | 33.3% | 2/6 dry reference points in Low zone |
+| Balanced Accuracy | 46.2% | |
+| ROC-AUC (well pts) | 0.568 | |
+| Mianwali sensitivity | 63.0% | Indus alluvial, n=19 — strongest signal |
+| Jhelum sensitivity | 67.0% | Jhelum River alluvial, n=3 |
+| Mann-Whitney p | 0.302 | Not significant — only 6 dry wells sampled |
+
+**Data sources used:** Rana et al. 2022 (7 pts), Naz et al. 2023 digitized (57 pts alluvial), GSP geology dry refs (12 pts)
+**Key limitation:** 40/85 wells hit NoData (outside exact district polygon boundaries)
+**Key finding:** Model over-predicts High in forested hard-rock areas (Margalla Hills, Kala Chitta) — missing GSP lithology layer
+**Pending:** PCRWR data request sent (email drafted) — will improve validation when received
+
+---
+
+## MCP Academic Search Server
+
+- **File:** `mcp_academic_search.py` (FastMCP, stdio transport)
+- **Config:** `.mcp.json` at project root
+- **Approved in:** `.claude/settings.json` → `enabledMcpjsonServers: ["academic-search"]`
+- **APIs used:** OpenAlex (free, no key), Semantic Scholar, Unpaywall
+- **Tools:** search_papers, search_pothohar_groundwater, search_pakistan_gw_data_sources, get_paper_details, find_open_access_pdf
+
+---
+
+## Thesis Template
+
+- **Location:** `C:\Users\ADNAN\THESIS\`
+- **Format:** Overleaf-ready LaTeX (pdfLaTeX + BibTeX)
+- **Status:** All 6 chapters pre-written with actual research data/numbers
+- **To use:** Zip folder → upload to overleaf.com → set main.tex as root → compile
+- **Still needed:** Fill university/supervisor name, copy figures from outputs/ to THESIS/figures/
 
 ---
 
@@ -251,8 +294,9 @@ jupyter notebook notebooks/
 - FAO/GAUL district names require `" District"` suffix (e.g. `"Chakwal District"`)
 - All GEE bands must be cast to `.toFloat()` before export to avoid type conflict errors
 - Training labels are knowledge-based (weighted overlay) — valid methodology for thesis
-- Geology layer from GSP sheets not yet digitized (optional enhancement)
+- Geology layer from GSP sheets not yet digitized — adding it as Feature 10 is top priority for Q1
 - `prediction_summary.json` pixel counts are from downsampled view (÷5); full-res counts in metrics
+- PowerShell execution policy blocks `.\venv\Scripts\activate` — use full python path instead
 
 ---
 
@@ -267,6 +311,6 @@ Chakwal, Punjab: A GIS and Remote Sensing Perspective.
 | Study area | 1 district (Chakwal) | 5 districts (Pothohar Plateau) |
 | Method | Manual weighted overlay | ML (RF, XGBoost, LightGBM, Ensemble) |
 | Features | 5 (LULC, geology, drainage, slope, rainfall) | 9 (+ NDVI, NDWI, TWI, LST, soil) |
-| Validation | Secondary data only (NESPAK) | 5-fold CV + ROC-AUC + 99% agreement test |
-| Output | Static GIS maps | GeoTIFF + interactive web map |
+| Validation | Secondary data only (NESPAK) | 5-fold CV + ROC-AUC + real-world well validation |
+| Output | Static GIS maps | GeoTIFF + 4 validation figures + LaTeX thesis |
 | Accuracy | Not reported | XGBoost: 99.12% accuracy, AUC=0.9998 |

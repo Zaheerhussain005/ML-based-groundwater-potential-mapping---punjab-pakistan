@@ -1,0 +1,98 @@
+{
+  "validation_summary": {
+    "n_wells_total": 45,
+    "n_productive": 39,
+    "n_dry": 6,
+    "sensitivity_pct": 58.97,
+    "specificity_pct": 33.33,
+    "balanced_accuracy_pct": 46.15,
+    "high_zone_capture_pct": 25.64,
+    "false_positive_rate_pct": 16.67
+  },
+  "statistical_tests": {
+    "mann_whitney_U": 133.0,
+    "mann_whitney_p": 0.3023871899023821,
+    "mann_whitney_sig": false,
+    "pointbiserial_r": 0.06897256614214509,
+    "pointbiserial_p": 0.6525670355281523,
+    "chi2_statistic": 0.6545017482517481,
+    "chi2_p": 0.7209028644627178,
+    "chi2_dof": 2,
+    "roc_auc_well_points": 0.5683760683760684
+  },
+  "productive_by_zone": {
+    "High": 10,
+    "Medium": 13,
+    "Low": 16
+  },
+  "dry_by_zone": {
+    "High": 1,
+    "Medium": 3,
+    "Low": 2
+  },
+  "per_district": [
+    {
+      "district": "Attock",
+      "n_productive": 1,
+      "n_dry": 2,
+      "sensitivity_pct": 100.0,
+      "specificity_pct": 50.0
+    },
+    {
+      "district": "Chakwal",
+      "n_productive": 2,
+      "n_dry": 3,
+      "sensitivity_pct": 50.0,
+      "specificity_pct": 33.3
+    },
+    {
+      "district": "Jhelum",
+      "n_productive": 3,
+      "n_dry": 0,
+      "sensitivity_pct": 66.7,
+      "specificity_pct": NaN
+    },
+    {
+      "district": "Mianwali",
+      "n_productive": 19,
+      "n_dry": 0,
+      "sensitivity_pct": 63.2,
+      "specificity_pct": NaN
+    },
+    {
+      "district": "Rawalpindi",
+      "n_productive": 14,
+      "n_dry": 1,
+      "sensitivity_pct": 50.0,
+      "specificity_pct": 0.0
+    }
+  ],
+  "per_hydro_zone": {
+    "alluvial": {
+      "n_productive": 36,
+      "n_dry": 0,
+      "sensitivity_pct": 61.1,
+      "specificity_pct": null
+    },
+    "mixed": {
+      "n_productive": 3,
+      "n_dry": 0,
+      "sensitivity_pct": 33.3,
+      "specificity_pct": null
+    },
+    "hard_rock": {
+      "n_productive": 0,
+      "n_dry": 6,
+      "sensitivity_pct": null,
+      "specificity_pct": 33.3
+    }
+  },
+  "data_sources": {
+    "Naz_2023": 37,
+    "Rana_2022": 4,
+    "GSP_geology": 4
+  },
+  "model": "XGBoost (best_model.joblib)",
+  "prediction_map": "outputs\\maps\\gw_prediction_xgboost.tif",
+  "well_data": "data\\validation\\validation_wells_combined.csv"
+}
