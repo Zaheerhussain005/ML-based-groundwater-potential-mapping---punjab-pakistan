@@ -1,0 +1,17 @@
+station,lat,lon,altitude_m,basin,zone_expected,pred_class,pred_label,prob_high
+Rawalpindi,33.5651,73.0169,540,Soan,alluvial,2.0,High,0.9999909400939941
+Chakwal,32.9328,72.863,522,Soan+Bunha,mixed,0.0,Low,9.450402960187176e-11
+Fateh Jung,33.5635,72.6375,514,Soan+Haro,alluvial,1.0,Medium,0.000248568132519722
+Talagang,32.9172,72.4081,457,Soan,mixed,0.0,Low,6.782140127281622e-11
+Gujjar Khan,33.2616,73.3058,458,Soan,alluvial,1.0,Medium,7.823352643754333e-05
+Pendigheb,33.2452,72.266,310,Soan,alluvial,1.0,Medium,4.9142647185362875e-05
+Taxila,33.7463,72.8397,549,Soan+Haro,alluvial,2.0,High,0.9997645020484924
+Khanpur Dam,33.8018,72.9305,545,Soan,alluvial,,NoData,
+Jabbri,33.9045,73.1733,923,Haro,hilly,,NoData,
+Wah Cantt,33.7843,72.7388,471,Haro,alluvial,2.0,High,0.9999998807907104
+Hattar,33.8521,72.8501,513,Haro,alluvial,,NoData,
+Mulhal Mughlan,33.0027,73.1497,523,Kuhan+Bunha,mixed,2.0,High,0.9999697208404541
+Khokhar Bala,32.7716,72.8146,853,Kuhan+Bunha,hilly,0.0,Low,1.669983422381005e-11
+Wagh,32.7343,73.3966,272,Kuhan+Bunha,alluvial,1.0,Medium,3.511383056320483e-06
+Sohawa,33.1171,73.4149,440,Kuhan+Bunha,mixed,1.0,Medium,1.4464373634837102e-05
+Dina,33.0306,73.6069,281,Kuhan+Bunha,alluvial,2.0,High,0.9999771118164062

@@ -1,0 +1,30 @@
+{
+  "part_A_well_validation": {
+    "total_wells": 85,
+    "direct_hits": 45,
+    "nn_recovered": 0,
+    "failed": 40,
+    "productive": 39,
+    "dry": 6,
+    "TP": 23,
+    "FN": 16,
+    "TN": 2,
+    "FP": 4,
+    "sensitivity_pct": 59.0,
+    "specificity_pct": 33.3,
+    "balanced_accuracy_pct": 46.2,
+    "ppv_pct": 85.2,
+    "fisher_exact_p": 0.7853
+  },
+  "part_B_roc_auc": {
+    "auc": 0.568,
+    "n_wells": 45,
+    "mann_whitney_p": 0.3024,
+    "prod_median_prob": 0.0,
+    "dry_median_prob": 0.0
+  },
+  "part_C_large_n": {
+    "naz2023_wells_valid": 80,
+    "sensitivity_pct": 41.2
+  }
+}
